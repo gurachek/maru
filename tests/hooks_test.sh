@@ -200,6 +200,11 @@ printf '   \nacme:demo:(seed|calibrate)\n' > "$BLWS/.claude/maru-blocklist"
 [ $? -eq 0 ] && { PASS=$((PASS+1)); echo "ok - blocklist ignores whitespace-only line"; } || { FAIL=$((FAIL+1)); echo "FAIL - blocklist ignores whitespace-only line"; }
 rm -rf "$BLWS"
 
+# --- A8: +refspec force-push (a normal, non-obfuscated way to force) ---
+expect_exit 2 "blocks git push origin +main (plus-refspec force)"  '{"tool_input":{"command":"git push origin +main"}}' destructive-commands.sh
+expect_exit 2 "blocks git push +HEAD:main refspec"                 '{"tool_input":{"command":"git push origin +HEAD:main"}}' destructive-commands.sh
+expect_exit 0 "allows normal src:dst refspec"                      '{"tool_input":{"command":"git push origin main:main"}}' destructive-commands.sh
+
 # --- A7: block messages are contextual, not a generic string ---
 expect_msg "maru:"         "block message is maru-branded"           '{"tool_input":{"command":"php artisan db:wipe"}}' destructive-commands.sh
 expect_msg "migrate:fresh" "block message names the offending command" '{"tool_input":{"command":"php artisan migrate:fresh"}}' destructive-commands.sh

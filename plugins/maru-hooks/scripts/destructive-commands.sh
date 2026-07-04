@@ -17,14 +17,15 @@ if [ -n "$m" ]; then
   block "maru: blocked \`$m\` — $reason. refused before it ran. nothing was lost."
 fi
 
-# 2. git force push — block -f/--force, including bundled short-flag clusters
-#    (-uf, -fu, ...), but allow a bare --force-with-lease. A stray --force
+# 2. git force push — block -f/--force, bundled short-flag clusters
+#    (-uf, -fu, ...), and a leading-+ refspec (git push origin +main, a normal
+#    non-obfuscated force). Allow a bare --force-with-lease. A stray --force
 #    still counts even alongside --force-with-lease (git: bare --force
 #    disables the lease check), so strip only the lease flag before running
 #    the force-detection patterns — no exemption logic beyond that.
 if echo "$c" | grep -Eiq 'git push'; then
   stripped=$(printf '%s' "$c" | sed -E 's/--force-with-lease(=[^ ]*)?//g')
-  echo "$stripped" | grep -Eiq -- ' -f( |$)|--force([^-]|$)| -[a-zA-Z0-9]*f[a-zA-Z0-9]*( |$)' \
+  echo "$stripped" | grep -Eiq -- ' -f( |$)|--force([^-]|$)| -[a-zA-Z0-9]*f[a-zA-Z0-9]*( |$)| \+[A-Za-z0-9_/]' \
     && block 'maru: blocked a git force-push — it can overwrite pushed history. use --force-with-lease instead.'
 fi
 
