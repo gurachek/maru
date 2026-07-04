@@ -51,8 +51,14 @@ never scrub that again; the provenance is a feature.
 4. Per-hook enable/disable via project settings, not plugin-wide only.
 5. LLM-cost guard: `init` could grep `app/Console/Commands` for `Prism::`
    usage and pre-seed `.claude/maru-blocklist` instead of relying on memory.
-6. Sail-branch harness coverage (MARU_SAIL=1 path is only manually verified);
-   interactive `/plugin install` end-to-end has still never been exercised.
+6. Sail-branch harness coverage (MARU_SAIL=1 path is only manually verified).
+
+End-to-end install was verified 2026-07-04 (retired from this list): a fresh
+`marketplace add gurachek/maru` from GitHub + `install` of all three plugins
+into an isolated `CLAUDE_CONFIG_DIR` — components registered, hooks.json wired
+(PreToolUse/PostToolUse/Stop), and the installed `destructive-commands.sh`
+blocked a destructive artisan command (exit 2) while allowing a benign one.
+The interactive `/plugin` TUI shares the same install codepath.
 
 ## History note
 
