@@ -38,6 +38,49 @@ flowchart LR
 
 The result: autonomous sessions whose output is **verified, not claimed**.
 
+## In practice
+
+You ask for a feature the way you always would:
+
+> *"Add an endpoint to invite a teammate to an organization."*
+
+What comes back isn't a fat controller you'll spend the next 20 minutes reshaping in review:
+
+- **`laravel-planner`** returns a file-level plan — module, DTOs, Action, migration, the exact tests — with open questions listed, not guessed.
+- **`tdd-implementer`** writes the failing test first, then the minimal `request → DTO → Action → response`.
+- Every saved file is **Pint-formatted and PHPStan-checked on the spot**, and the turn **can't end while the suite is red**.
+
+So you review **decisions, not codestyle.** No *"extract this to an Action,"* no *"this should be an enum,"* no fix-the-formatting loop — that's settled before the diff reaches you.
+
+### What lands in the diff
+
+Left to its own devices, an agent optimizes for *make it work* — logic in the controller, no boundary, a magic string, an Eloquent model leaked out:
+
+```php
+// ❌ unguided: fat controller, inline logic, stringly-typed
+public function store(Request $request)
+{
+    $data = $request->validate([/* ... */]);
+    if ($data['role'] === 'admin') { /* ... */ }   // magic string
+    $member = OrganizationMember::create($data);    // business logic inline
+    return $member;                                 // Eloquent model leaked
+}
+```
+
+With the `laravel-feature` + `dto-openapi` skills steering and the hooks enforcing, the same request lands as a thin controller over a validated boundary and an Action:
+
+```php
+// ✅ maru: validate → DTO → Action → response
+public function store(InviteTeammateData $data, InviteTeammate $action): JsonResponse
+{
+    return response()->json($action($data), 201);
+}
+```
+
+`InviteTeammateData` is a `spatie/laravel-data` object with validation on the class; `InviteTeammate` is a single-`__invoke` Action returning a DTO (never an Eloquent model); `Role` is a backed enum — all `declare(strict_types=1)`, Pint-clean and PHPStan-green before you see it.
+
+> **Honest split:** the **hooks guarantee** the mechanical layer — formatting, static analysis, a green suite — deterministically. The **skills steer** the architecture. An LLM isn't deterministic, but out of the box the shape it reaches for is the one on the right, not the one on the left.
+
 ## Why not just use…?
 
 | Instead of maru | What it gives you | The gap maru fills |
@@ -55,7 +98,7 @@ The `destructive-commands` hook refuses irreversible commands *before* they run 
 
 ![maru blocking a destructive migrate:fresh command before it executes](assets/migrate-fresh-block.svg)
 
-Same guard blocks `db:wipe`, `drop database`, `rm -rf /`, git force-push, and destructive `tinker`/`psql` payloads. It **fails closed** — no `jq` on the host, no run.
+Same guard blocks `db:wipe`, `drop database`, `rm -rf /`, git force-push, and destructive `tinker`/`psql` payloads. It **fails closed** — no `jq` on the host, no run. It's an *accident* guard, not a sandbox — the durable floor underneath is still DB backups and a non-superuser role ([threat model](docs/hooks.md)).
 
 ## Install
 
@@ -77,11 +120,13 @@ Then, if you installed `maru-core`, in your project:
 /maru-core:init
 ```
 
-`init` scaffolds a `CLAUDE.md` (never overwriting an existing one), detects Sail vs. direct binaries and which tools are present, and offers to enable the merge gate. Verify the guard layer yourself: `sh tests/hooks_test.sh` (57 cases).
+`init` scaffolds a `CLAUDE.md` (never overwriting an existing one), detects Sail vs. direct binaries and which tools are present, and offers to enable the `gate-on-green` stop hook. Verify the guard layer yourself: `sh tests/hooks_test.sh` (57 cases).
 
 Install `maru-rls` **only** in multi-tenant apps — its reviewer flags missing tenant scoping as a security finding, which is noise in single-tenant ones.
 
 ## What you get
+
+> **Won't fight your existing stack.** On a Pest / FormRequest / no-modules project the opinionated skills and reviewers detect the difference and stand down — keeping the universal principles (thin controllers, test-first, validated boundaries) and dropping the house-style specifics. ([how](docs/skills.md))
 
 **maru-hooks** — deterministic guards, no config, degrade gracefully (a missing tool is skipped, never blocks; the two safety hooks fail *closed*).
 
@@ -105,7 +150,11 @@ Install `maru-rls` **only** in multi-tenant apps — its reviewer flags missing 
 | Agent | `code-reviewer` | SOLID / Laravel idioms / spaghetti review of the diff |
 | Agent | `dto-api-reviewer` | DTO-at-boundaries + REST/OpenAPI review |
 | Agent | `ui-ux-reviewer` | calm / dense / keyboard-first UI review |
-| Skill | 5 skills | feature workflow, DTOs, Prism LLM, frontend, disciplined coding |
+| Skill | `laravel-feature` | the `request → DTO → Action → response` feature workflow |
+| Skill | `dto-openapi` | `spatie/laravel-data` at every boundary + REST/OpenAPI contract |
+| Skill | `prism-llm` | LLM calls behind a service, an audit row per call, `Prism::fake()` tests |
+| Skill | `frontend-design` | calm / dense / keyboard-first Inertia/Vue rules |
+| Skill | `disciplined-coding` | test-first, small commits, file-size limits |
 | Command | `/maru-core:init` | scaffold `CLAUDE.md`, offer gate-on-green |
 
 → **[docs/skills.md](docs/skills.md)** — every skill in depth + the detect-and-stand-down ladder.
@@ -133,6 +182,10 @@ Install `maru-rls` **only** in multi-tenant apps — its reviewer flags missing 
 ## Provenance
 
 maru is extracted from [Vesna](https://tryvesna.ai) — an audit-ready hiring copilot for technical recruiters — where these conventions and hooks run in daily development. maru's opinions *are* Vesna's stack: Laravel + Postgres RLS multi-tenancy, Inertia + Vue 3 + TypeScript, `spatie/laravel-data` at every boundary, Prism for LLM calls, class-based PHPUnit.
+
+## Author
+
+Built by **[Valerii Hurachek](https://github.com/gurachek)** — 9 years as a software engineer, most of it in PHP, across startups, freelance, outsourcing, govtech, and enterprise. maru is the engineering standard I converged on over those years, extracted from [Vesna](https://tryvesna.ai).
 
 ## License
 
