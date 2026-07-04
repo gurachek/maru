@@ -1,0 +1,24 @@
+{
+  "name": "maru",
+  "owner": {
+    "name": "Valerii Hurachek",
+    "email": "valerii@tryvesna.ai"
+  },
+  "plugins": [
+    {
+      "name": "maru-hooks",
+      "source": "./plugins/maru-hooks",
+      "description": "Deterministic guard rails for Laravel + Claude Code: Pint/PHPStan/Prettier/ESLint on every edit, forbidden-path and destructive-command blocking (fail-closed), a project-extensible blocklist, and an opt-in gate-on-green stop hook. Stack-agnostic — works with any Laravel app."
+    },
+    {
+      "name": "maru-core",
+      "source": "./plugins/maru-core",
+      "description": "Generic Laravel discipline for Claude Code: TDD workflow agents, code/DTO/UI reviewers, skills, and /maru-core:init."
+    },
+    {
+      "name": "maru-rls",
+      "source": "./plugins/maru-rls",
+      "description": "Postgres row-level-security multi-tenancy add-on: RLS pattern reference skill and a tenant-isolation security reviewer. Install only in multi-tenant projects."
+    }
+  ]
+}

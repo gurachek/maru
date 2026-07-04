@@ -1,0 +1,9 @@
+{
+  "name": "maru-core",
+  "version": "0.3.0",
+  "description": "Generic Laravel discipline for Claude Code: TDD workflow agents, code/DTO/UI reviewers, skills, and /maru-core:init.",
+  "author": {
+    "name": "Valerii Hurachek",
+    "email": "valerii@tryvesna.ai"
+  }
+}

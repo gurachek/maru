@@ -1,0 +1,9 @@
+{
+  "name": "maru-rls",
+  "version": "0.2.0",
+  "description": "Postgres row-level-security multi-tenancy add-on: RLS pattern reference skill and a tenant-isolation security reviewer.",
+  "author": {
+    "name": "Valerii Hurachek",
+    "email": "valerii@tryvesna.ai"
+  }
+}

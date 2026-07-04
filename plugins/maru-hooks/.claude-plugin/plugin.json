@@ -1,0 +1,9 @@
+{
+  "name": "maru-hooks",
+  "version": "0.3.0",
+  "description": "Deterministic guard rails for Laravel + Claude Code: Pint/PHPStan/Prettier/ESLint on every edit, forbidden-path and destructive-command blocking (fail-closed), a project-extensible blocklist, and an opt-in gate-on-green stop hook. Stack-agnostic — works with any Laravel app.",
+  "author": {
+    "name": "Valerii Hurachek",
+    "email": "valerii@tryvesna.ai"
+  }
+}
