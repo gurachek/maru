@@ -7,7 +7,7 @@ never scrub that again; the provenance is a feature.
 
 ## Commands
 
-- Test: `./tests/hooks_test.sh` (57 cases, dependency-free POSIX sh; must stay
+- Test: `./tests/hooks_test.sh` (61 cases, pure POSIX sh; must stay
   green — run before every commit that touches `plugins/maru-hooks/scripts/`)
 - Validate manifests: `find . -name '*.json' -not -path './.git/*' -exec jq empty {} +`
   and `claude plugin validate .`

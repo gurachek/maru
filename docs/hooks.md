@@ -52,7 +52,7 @@ Projects can add their own forbidden paths or destructive patterns via their own
 
 ## Verify them yourself
 
-The hook layer is covered by 57 dependency-free shell tests:
+The hook layer is covered by 61 shell tests (pure `sh`, no framework):
 
 ```
 sh tests/hooks_test.sh

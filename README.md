@@ -6,7 +6,7 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue"></a>
   <img alt="Claude Code plugin" src="https://img.shields.io/badge/plugin-Claude%20Code-8957e5?logo=anthropic&logoColor=white">
   <img alt="Built for Laravel" src="https://img.shields.io/badge/built%20for-Laravel-FF2D20?logo=laravel&logoColor=white">
-  <img alt="57 hook tests passing" src="https://img.shields.io/badge/hooks-57%20passing-3fb950">
+  <img alt="61 hook tests passing" src="https://img.shields.io/badge/hooks-61%20passing-3fb950">
   <img alt="PRs welcome" src="https://img.shields.io/badge/PRs-welcome-2dd4bf">
 </p>
 
@@ -77,7 +77,7 @@ public function store(InviteTeammateData $data, InviteTeammate $action): JsonRes
 }
 ```
 
-`InviteTeammateData` is a `spatie/laravel-data` object with validation on the class; `InviteTeammate` is a single-`__invoke` Action returning a DTO (never an Eloquent model); `Role` is a backed enum — all `declare(strict_types=1)`, Pint-clean and PHPStan-green before you see it.
+`InviteTeammateData` is a `spatie/laravel-data` object with validation on the class; `InviteTeammate` is a single-`__invoke` Action returning a DTO (never an Eloquent model); `Role` is a backed enum — all `declare(strict_types=1)`, Pint-clean and PHPStan-green before you see it. The validation moved onto the Data class and the branching into the Action — the complexity didn't vanish, it moved out of the controller to where it belongs.
 
 > **Honest split:** the **hooks guarantee** the mechanical layer — formatting, static analysis, a green suite — deterministically. The **skills steer** the architecture. An LLM isn't deterministic, but out of the box the shape it reaches for is the one on the right, not the one on the left.
 
@@ -86,11 +86,13 @@ public function store(InviteTeammateData $data, InviteTeammate $action): JsonRes
 | Instead of maru | What it gives you | The gap maru fills |
 |---|---|---|
 | **[Laravel Boost](https://github.com/laravel/boost)** (official) | Laravel *knowledge* — MCP docs, guidelines the agent *may* follow | Knowledge isn't enforcement. maru **gates** — a hook the model can't talk past. *(Install both — [they compose](#pairs-with).)* |
-| **Your own `CLAUDE.md` + hooks** | Exactly this — if you build, test, and maintain it | maru is the packaged version: 57 dependency-free hook tests, hardened against real bypasses, production-proven. |
+| **Your own `CLAUDE.md` + hooks** | Exactly this — if you build, test, and maintain it | maru is the packaged version: 61 hook tests in pure `sh` (no framework) that cover real bypasses — bundled `-uf` force flags, the `--force-with-lease` decoy — and it's run daily on one production app. |
 | **CI / linters / PR review** | Catches drift at **PR time**, across the whole diff | maru catches it **at the edit**, before the turn ends — one bad choice, not a diff full of them. |
 | **[superpowers](https://github.com/obra/superpowers)** | Generic *process* (brainstorm → spec → plan) | Not a Laravel standard. maru is the *"what good Laravel looks like"* that process executes against. *(They [pair](#pairs-with).)* |
 
-**One line:** maru is the only thing that enforces a Laravel engineering standard at edit-time, with a reviewer that isn't the author and a hook the agent can't rationalize past.
+**In short:** maru enforces a Laravel engineering standard at edit-time — a reviewer that isn't the author, and a hook the agent can't rationalize past.
+
+**What it won't do:** it governs *how* code is written, not *whether* the feature is the right one — a weak plan still needs your judgment — and the command guards are accident-prevention, not a security sandbox.
 
 ### See it stop something
 
@@ -98,7 +100,7 @@ The `destructive-commands` hook refuses irreversible commands *before* they run 
 
 ![maru blocking a destructive migrate:fresh command before it executes](assets/migrate-fresh-block.svg)
 
-Same guard blocks `db:wipe`, `drop database`, `rm -rf /`, git force-push, and destructive `tinker`/`psql` payloads. It **fails closed** — no `jq` on the host, no run. It's an *accident* guard, not a sandbox — the durable floor underneath is still DB backups and a non-superuser role ([threat model](docs/hooks.md)).
+Same guard blocks `db:wipe`, `drop database`, `rm -rf /` (root only), git force-push, and destructive `tinker`/`psql` payloads. It **fails closed** — no `jq` on the host, no run. It's an *accident* guard, not a sandbox — the durable floor underneath is still DB backups and a non-superuser role ([threat model](docs/hooks.md)).
 
 ## Install
 
@@ -120,9 +122,16 @@ Then, if you installed `maru-core`, in your project:
 /maru-core:init
 ```
 
-`init` scaffolds a `CLAUDE.md` (never overwriting an existing one), detects Sail vs. direct binaries and which tools are present, and offers to enable the `gate-on-green` stop hook. Verify the guard layer yourself: `sh tests/hooks_test.sh` (57 cases).
+`init` scaffolds a `CLAUDE.md` (never overwriting an existing one), detects Sail vs. direct binaries and which tools are present, and offers to enable the `gate-on-green` stop hook. Verify the guard layer yourself: `sh tests/hooks_test.sh` (61 cases).
 
 Install `maru-rls` **only** in multi-tenant apps — its reviewer flags missing tenant scoping as a security finding, which is noise in single-tenant ones.
+
+## What it touches
+
+- **Your project:** only `/maru-core:init` writes to your repo — it scaffolds a `CLAUDE.md` (never overwriting an existing one) and, if you opt in, an empty `.claude/gate-on-green` marker. Nothing else.
+- **Everything else** — hooks, agents, skills — lives in Claude Code's plugin dir under `~/.claude`, not your repo. It's shell scripts and markdown that run locally: **no telemetry, no network calls.**
+- **Requirements:** Claude Code, plus `jq` for the safety hooks. The quality hooks use your project's Pint / PHPStan / Prettier / ESLint when present and silently skip when absent — install only what you want enforced.
+- **Remove it:** `claude plugin uninstall maru-hooks@maru` (likewise for the others), or disable one from `/plugin`. Your own `.claude/settings.json` hooks always compose with, and can override, maru's.
 
 ## What you get
 
