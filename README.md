@@ -1,8 +1,18 @@
-# maru ◯
+<p align="center">
+  <img src="assets/banner.svg" alt="maru — Laravel discipline for your AI coding agent, enforced at edit-time" width="820">
+</p>
 
-**Claude Code plugins that enforce Laravel engineering discipline at edit-time — not at PR time.**
+<p align="center">
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue"></a>
+  <img alt="Claude Code plugin" src="https://img.shields.io/badge/plugin-Claude%20Code-8957e5?logo=anthropic&logoColor=white">
+  <img alt="Built for Laravel" src="https://img.shields.io/badge/built%20for-Laravel-FF2D20?logo=laravel&logoColor=white">
+  <img alt="57 hook tests passing" src="https://img.shields.io/badge/hooks-57%20passing-3fb950">
+  <img alt="PRs welcome" src="https://img.shields.io/badge/PRs-welcome-2dd4bf">
+</p>
 
-Extracted from [Vesna](https://tryvesna.ai), a production Laravel app where these conventions and hooks run in daily development ([provenance](#provenance)).
+<p align="center"><b>Claude Code plugins that enforce Laravel engineering discipline at edit-time — not at PR time.</b></p>
+
+<p align="center"><sub>Extracted from <a href="https://tryvesna.ai">Vesna</a>, a production Laravel app where these conventions and hooks run daily · <a href="#provenance">provenance</a></sub></p>
 
 ---
 
