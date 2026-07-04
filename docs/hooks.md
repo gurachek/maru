@@ -52,7 +52,7 @@ Projects can add their own forbidden paths or destructive patterns via their own
 
 ## Verify them yourself
 
-The hook layer is covered by 61 shell tests (pure `sh`, no framework):
+The hook layer is covered by 64 shell tests (pure `sh`, no framework; run in CI on every push):
 
 ```
 sh tests/hooks_test.sh

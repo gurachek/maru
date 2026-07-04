@@ -7,7 +7,7 @@ never scrub that again; the provenance is a feature.
 
 ## Commands
 
-- Test: `./tests/hooks_test.sh` (61 cases, pure POSIX sh; must stay
+- Test: `./tests/hooks_test.sh` (64 cases, pure POSIX sh; must stay
   green — run before every commit that touches `plugins/maru-hooks/scripts/`)
 - Validate manifests: `find . -name '*.json' -not -path './.git/*' -exec jq empty {} +`
   and `claude plugin validate .`
@@ -42,10 +42,11 @@ never scrub that again; the provenance is a feature.
 
 ## Roadmap (v0.4 candidates, from the 2026-07 persona reviews)
 
-1. Demo gif/asciinema: a hook blocking `migrate:fresh` live — top conversion
-   asset for sharing.
-2. GitHub Actions workflow running `tests/hooks_test.sh` (the repo preaches
-   verification and has no CI — fix the irony).
+1. ~~Demo gif~~ — DONE 2026-07-04: hand-authored animated terminal SVG
+   (`assets/migrate-fresh-block.svg`), embedded in the README.
+2. ~~GitHub Actions running `tests/hooks_test.sh`~~ — DONE 2026-07-04:
+   `.github/workflows/tests.yml` on push/PR; README shows the live status
+   badge (no more hand-maintained count).
 3. Quality hooks: surface real PHPStan/ESLint output on failure instead of
    the generic "X failed" (currently `>/dev/null 2>&1`).
 4. Per-hook enable/disable via project settings, not plugin-wide only.

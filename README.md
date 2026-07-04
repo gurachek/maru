@@ -6,7 +6,7 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue"></a>
   <img alt="Claude Code plugin" src="https://img.shields.io/badge/plugin-Claude%20Code-8957e5?logo=anthropic&logoColor=white">
   <img alt="Built for Laravel" src="https://img.shields.io/badge/built%20for-Laravel-FF2D20?logo=laravel&logoColor=white">
-  <img alt="61 hook tests passing" src="https://img.shields.io/badge/hooks-61%20passing-3fb950">
+  <a href="https://github.com/gurachek/maru/actions/workflows/tests.yml"><img alt="hook tests" src="https://github.com/gurachek/maru/actions/workflows/tests.yml/badge.svg?branch=main"></a>
   <img alt="PRs welcome" src="https://img.shields.io/badge/PRs-welcome-2dd4bf">
 </p>
 
@@ -86,7 +86,7 @@ public function store(InviteTeammateData $data, InviteTeammate $action): JsonRes
 | Instead of maru | What it gives you | The gap maru fills |
 |---|---|---|
 | **[Laravel Boost](https://github.com/laravel/boost)** (official) | Laravel *knowledge* — MCP docs, guidelines the agent *may* follow | Knowledge isn't enforcement. maru **gates** — a hook the model can't talk past. *(Install both — [they compose](#pairs-with).)* |
-| **Your own `CLAUDE.md` + hooks** | Exactly this — if you build, test, and maintain it | maru is the packaged version: 61 hook tests in pure `sh` (no framework) that cover real bypasses — bundled `-uf` force flags, the `--force-with-lease` decoy — and it's run daily on one production app. |
+| **Your own `CLAUDE.md` + hooks** | Exactly this — if you build, test, and maintain it | maru is the packaged version: 64 hook tests in pure `sh` (no framework, run in CI) covering real bypasses — bundled `-uf` flags, the `--force-with-lease` decoy, `+refspec` force — and it's run daily on one production app. |
 | **CI / linters / PR review** | Catches drift at **PR time**, across the whole diff | maru catches it **at the edit**, before the turn ends — one bad choice, not a diff full of them. |
 | **[superpowers](https://github.com/obra/superpowers)** | Generic *process* (brainstorm → spec → plan) | Not a Laravel standard. maru is the *"what good Laravel looks like"* that process executes against. *(They [pair](#pairs-with).)* |
 
@@ -122,7 +122,7 @@ Then, if you installed `maru-core`, in your project:
 /maru-core:init
 ```
 
-`init` scaffolds a `CLAUDE.md` (never overwriting an existing one), detects Sail vs. direct binaries and which tools are present, and offers to enable the `gate-on-green` stop hook. Verify the guard layer yourself: `sh tests/hooks_test.sh` (61 cases).
+`init` scaffolds a `CLAUDE.md` (never overwriting an existing one), detects Sail vs. direct binaries and which tools are present, and offers to enable the `gate-on-green` stop hook. Verify the guard layer yourself: `sh tests/hooks_test.sh` (64 cases, also run in CI).
 
 Install `maru-rls` **only** in multi-tenant apps — its reviewer flags missing tenant scoping as a security finding, which is noise in single-tenant ones.
 
