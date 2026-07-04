@@ -13,6 +13,13 @@ expect_exit() { # expect_exit <code> <label> <stdin-json> <script> [env...]
   else FAIL=$((FAIL+1)); echo "FAIL - $label (want $code got $got)"; fi
 }
 
+expect_msg() { # expect_msg <substring> <label> <stdin-json> <script>
+  needle=$1; label=$2; json=$3; script=$4
+  err=$(printf '%s' "$json" | "$SCRIPTS/$script" 2>&1 >/dev/null)
+  if printf '%s' "$err" | grep -qF "$needle"; then PASS=$((PASS+1)); echo "ok - $label"
+  else FAIL=$((FAIL+1)); echo "FAIL - $label (stderr lacked '$needle')"; fi
+}
+
 # --- forbidden-paths ---
 expect_exit 2 "blocks vendor"            '{"tool_input":{"file_path":"vendor/foo/Bar.php"}}' forbidden-paths.sh
 expect_exit 2 "blocks nested vendor"     '{"tool_input":{"file_path":"/x/app/vendor/foo.php"}}' forbidden-paths.sh
@@ -192,6 +199,12 @@ printf '   \nacme:demo:(seed|calibrate)\n' > "$BLWS/.claude/maru-blocklist"
 ( cd "$BLWS" && printf '%s' '{"tool_input":{"command":"php artisan acme:demo:status   details"}}' | "$SCRIPTS/destructive-commands.sh" >/dev/null 2>&1 )
 [ $? -eq 0 ] && { PASS=$((PASS+1)); echo "ok - blocklist ignores whitespace-only line"; } || { FAIL=$((FAIL+1)); echo "FAIL - blocklist ignores whitespace-only line"; }
 rm -rf "$BLWS"
+
+# --- A7: block messages are contextual, not a generic string ---
+expect_msg "maru:"         "block message is maru-branded"           '{"tool_input":{"command":"php artisan db:wipe"}}' destructive-commands.sh
+expect_msg "migrate:fresh" "block message names the offending command" '{"tool_input":{"command":"php artisan migrate:fresh"}}' destructive-commands.sh
+expect_msg "force-push"    "force-push block message is contextual"   '{"tool_input":{"command":"git push --force origin main"}}' destructive-commands.sh
+expect_msg "tinker"        "tinker block message is contextual"       '{"tool_input":{"command":"php artisan tinker --execute=\"Schema::drop(\\\"users\\\")\""}}' destructive-commands.sh
 
 echo "---"; echo "pass=$PASS fail=$FAIL"
 [ "$FAIL" -eq 0 ]
