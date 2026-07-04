@@ -129,7 +129,7 @@ Install `maru-rls` **only** in multi-tenant apps — its reviewer flags missing 
 
 ## Provenance
 
-maru is extracted from [Vesna](https://tryvesna.ai) — an audit-ready hiring copilot for technical recruiters — where these conventions and hooks run in daily development. maru's opinions *are* Vesna's stack: Laravel + Postgres RLS multi-tenancy, Inertia + Vue 3 + TypeScript, `spatie/laravel-data` at every boundary, Prism for LLM calls, class-based PHPUnit. (You'll spot `vesna:*` commands in the hook test fixtures — that's the real blocklist the extensible guard was built for.)
+maru is extracted from [Vesna](https://tryvesna.ai) — an audit-ready hiring copilot for technical recruiters — where these conventions and hooks run in daily development. maru's opinions *are* Vesna's stack: Laravel + Postgres RLS multi-tenancy, Inertia + Vue 3 + TypeScript, `spatie/laravel-data` at every boundary, Prism for LLM calls, class-based PHPUnit.
 
 ## License
 

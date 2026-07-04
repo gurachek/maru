@@ -36,8 +36,9 @@ never scrub that again; the provenance is a feature.
   explicitly in agent `tools:` frontmatter or they're unreachable.
 - Versioning: bump the affected plugin(s) + CHANGELOG entry per release; keep
   untouched plugins at their version (maru-rls lags deliberately).
-- Genericization: no other private project names in shipped content;
-  `vesna:*` in test fixtures is intentional (attributed provenance).
+- Genericization: no private project names anywhere in shipped content,
+  including test fixtures — use a generic placeholder (`acme:*`). Vesna
+  attribution lives only in the README provenance and the author email.
 
 ## Roadmap (v0.4 candidates, from the 2026-07 persona reviews)
 

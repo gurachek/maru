@@ -94,15 +94,15 @@ expect_exit 0 "allows plain psql select"        '{"tool_input":{"command":"psql 
 # --- A3: project-extensible blocklist ---
 BLTMP=$(mktemp -d)
 mkdir -p "$BLTMP/.claude"
-printf '# comment line\n\nvesna:demo:(seed|calibrate)\n' > "$BLTMP/.claude/maru-blocklist"
-( cd "$BLTMP" && printf '%s' '{"tool_input":{"command":"php artisan vesna:demo:seed"}}' | "$SCRIPTS/destructive-commands.sh" >/dev/null 2>&1 )
+printf '# comment line\n\nacme:demo:(seed|calibrate)\n' > "$BLTMP/.claude/maru-blocklist"
+( cd "$BLTMP" && printf '%s' '{"tool_input":{"command":"php artisan acme:demo:seed"}}' | "$SCRIPTS/destructive-commands.sh" >/dev/null 2>&1 )
 [ $? -eq 2 ] && { PASS=$((PASS+1)); echo "ok - blocklist blocks matching command"; } || { FAIL=$((FAIL+1)); echo "FAIL - blocklist blocks matching command"; }
-( cd "$BLTMP" && printf '%s' '{"tool_input":{"command":"php artisan vesna:demo:status"}}' | "$SCRIPTS/destructive-commands.sh" >/dev/null 2>&1 )
+( cd "$BLTMP" && printf '%s' '{"tool_input":{"command":"php artisan acme:demo:status"}}' | "$SCRIPTS/destructive-commands.sh" >/dev/null 2>&1 )
 [ $? -eq 0 ] && { PASS=$((PASS+1)); echo "ok - blocklist allows non-matching command"; } || { FAIL=$((FAIL+1)); echo "FAIL - blocklist allows non-matching command"; }
 rm -rf "$BLTMP"
 
 NOBLTMP=$(mktemp -d)
-( cd "$NOBLTMP" && printf '%s' '{"tool_input":{"command":"php artisan vesna:demo:seed"}}' | "$SCRIPTS/destructive-commands.sh" >/dev/null 2>&1 )
+( cd "$NOBLTMP" && printf '%s' '{"tool_input":{"command":"php artisan acme:demo:seed"}}' | "$SCRIPTS/destructive-commands.sh" >/dev/null 2>&1 )
 [ $? -eq 0 ] && { PASS=$((PASS+1)); echo "ok - no blocklist file leaves behavior unchanged"; } || { FAIL=$((FAIL+1)); echo "FAIL - no blocklist file leaves behavior unchanged"; }
 rm -rf "$NOBLTMP"
 
@@ -174,8 +174,8 @@ expect_exit 2 "blocks unscoped psql DELETE FROM"                '{"tool_input":{
 # --- A6: blocklist parsing edge cases ---
 BLNL=$(mktemp -d)
 mkdir -p "$BLNL/.claude"
-printf 'vesna:demo:(seed|calibrate)' > "$BLNL/.claude/maru-blocklist"
-( cd "$BLNL" && printf '%s' '{"tool_input":{"command":"php artisan vesna:demo:seed"}}' | "$SCRIPTS/destructive-commands.sh" >/dev/null 2>&1 )
+printf 'acme:demo:(seed|calibrate)' > "$BLNL/.claude/maru-blocklist"
+( cd "$BLNL" && printf '%s' '{"tool_input":{"command":"php artisan acme:demo:seed"}}' | "$SCRIPTS/destructive-commands.sh" >/dev/null 2>&1 )
 [ $? -eq 2 ] && { PASS=$((PASS+1)); echo "ok - blocklist matches last line with no trailing newline"; } || { FAIL=$((FAIL+1)); echo "FAIL - blocklist matches last line with no trailing newline"; }
 rm -rf "$BLNL"
 
@@ -188,8 +188,8 @@ rm -rf "$BLIC"
 
 BLWS=$(mktemp -d)
 mkdir -p "$BLWS/.claude"
-printf '   \nvesna:demo:(seed|calibrate)\n' > "$BLWS/.claude/maru-blocklist"
-( cd "$BLWS" && printf '%s' '{"tool_input":{"command":"php artisan vesna:demo:status   details"}}' | "$SCRIPTS/destructive-commands.sh" >/dev/null 2>&1 )
+printf '   \nacme:demo:(seed|calibrate)\n' > "$BLWS/.claude/maru-blocklist"
+( cd "$BLWS" && printf '%s' '{"tool_input":{"command":"php artisan acme:demo:status   details"}}' | "$SCRIPTS/destructive-commands.sh" >/dev/null 2>&1 )
 [ $? -eq 0 ] && { PASS=$((PASS+1)); echo "ok - blocklist ignores whitespace-only line"; } || { FAIL=$((FAIL+1)); echo "FAIL - blocklist ignores whitespace-only line"; }
 rm -rf "$BLWS"
 
