@@ -43,14 +43,7 @@ The result: autonomous sessions whose output is **verified, not claimed**.
 
 The `destructive-commands` hook refuses irreversible commands *before* they run — no confirmation the agent can auto-approve:
 
-```console
-$ # agent tries to reset the database mid-session
-$ sail artisan migrate:fresh --seed
-
-⛔ maru: blocked `migrate:fresh` — this drops every table.
-   Refused before execution. Use a reversible migration, or
-   run it yourself if you really mean it.
-```
+![maru blocking a destructive migrate:fresh command before it executes](assets/migrate-fresh-block.svg)
 
 Same guard blocks `db:wipe`, `drop database`, `rm -rf /`, git force-push, and destructive `tinker`/`psql` payloads. It **fails closed** — no `jq` on the host, no run.
 
