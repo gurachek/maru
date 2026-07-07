@@ -18,7 +18,7 @@ The spine of backend feature work:
 
 Carries the hard gotchas: never return Eloquent models from controllers; house-style class-based PHPUnit; no logic in controllers or models; same DB engine in tests as production. Includes the stack-detection ladder — on a project without `spatie/laravel-data`, modules, or PHPUnit, the matching specifics stand down and the project's own convention (FormRequests, standard `app/` layout, Pest) applies instead.
 
-**Machine-checkable module boundaries:** a module's `Models`/`Actions` are private; other modules reach it only through its emitted events or public `Contracts`. Install [phpat](https://www.phpat.dev/) and the existing PHPStan hook enforces this on every edit — no extra tooling.
+**Machine-checkable module boundaries:** a module's `Models`/`Actions` are private; other modules reach it only through its emitted events or public `Contracts`. Install [phpat](https://www.phpat.dev/) and the existing PHPStan hook enforces this on every edit — no extra tooling. (Already on [deptrac](https://github.com/qossmic/deptrac) or [PHPArkitect](https://github.com/phparkitect/arkitect)? Keep them — maru defaults to phpat only because, as a PHPStan extension, it fails per-edit through the hook; the others gate at CI or a manual run. Don't run two.)
 
 *Triggers when building or modifying any backend feature.*
 

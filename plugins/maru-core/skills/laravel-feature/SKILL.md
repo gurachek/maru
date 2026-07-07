@@ -71,6 +71,8 @@ This example is one directed pair — a real module graph needs coverage for eve
 
 Honest limit: without phpat installed, the boundary is convention-only — nothing blocks a `use App\Modules\Other\Models\...` import. The `code-reviewer` agent flags foreign-module model/action imports as a fallback, but that's a review-time catch, not a per-edit gate.
 
+**Already on [deptrac](https://github.com/qossmic/deptrac) or [PHPArkitect](https://github.com/phparkitect/arkitect)?** Keep them — they enforce the same boundaries and are fine choices. maru defaults to phpat only because, as a PHPStan extension, it rides the existing `php-quality` hook and fails **per-edit** with no extra step; deptrac/PHPArkitect run as their own binary, so they gate at CI or a manual run instead. Either is fine — just don't run two boundary checkers.
+
 ## The flow
 
 1. **Plan** the files (or use the `laravel-planner` agent).
